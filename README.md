@@ -75,14 +75,6 @@ cd frontend
 npm install
 ```
 
-## Variables de Entorno
-
-Crear un archivo `.env` dentro de la carpeta `backend`.
-
-```env
-PORT=3000
-MONGODB_URI=tu_uri_de_mongodb
-JWT_SECRET=tu_clave_secreta
 ```
 
 ## Ejecutar el Proyecto
