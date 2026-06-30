@@ -1,15 +1,22 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { headerStyles } from './styles.js';
+
 import Inicio from './screens/InicioScreen.jsx';
 import Catalogo from './screens/CatalogoScreen.jsx';
 import AdminPanel from './screens/AdminPanelScreen.jsx';
 import Login from './screens/LoginScreen.jsx';
 import { useEffect, useState } from 'react';
-
+import CartScreen from './screens/CartScreen.jsx';
+import { useCart } from './context/CartContext.jsx';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './styles/Header.css';
 
 function App() {
   // Estado para guardar el token del administrador
   const [token, setToken] = useState(null);
+
+  // estado para el header ; celu y pc
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   // Al cargar la app por primera vez, verificamos si ya había un token guardado
   useEffect(() => {
@@ -26,38 +33,97 @@ function App() {
     setToken(null);
   };
 
+const { cart } = useCart();
+
+const cantidadProductos = cart.reduce(
+  (acc, item) => acc + item.cantidad,
+  0
+);
+
+console.log("menu:", menuAbierto);
+
   return (
     <Router>
-      <div style={{ backgroundColor: '#fafafa', minHeight: '100vh', margin: 0 }}>
+      <div /* style={{ backgroundColor: '#fafafa', minHeight: '100vh', margin: 0 }} */>
         
         {/* HEADER */}
-        <header style={headerStyles.container}>
-          <Link to="/" style={headerStyles.logo}>
-            <h1>Zeus Import</h1>
-          </Link>
-          
-          <nav style={headerStyles.nav}>
-            <Link to="/" style={headerStyles.link}>Inicio</Link>
-            <Link to="/catalogo" style={headerStyles.link}>Catálogo</Link>
-            <Link to="/admin" style={headerStyles.linkAdmin}>Admin ⚙️</Link>
-            
-            {/* Si está logueado, le mostramos el botón de cerrar sesión */}
-            {token && (
-              <button onClick={cerrarSesion} style={{ 
-                background: 'none', border: '1px solid #e74c3c', color: '#e74c3c', 
-                borderRadius: '4px', cursor: 'pointer', padding: '5px 10px' 
-              }}>
-                Salir
-              </button>
-            )}
-          </nav>
+        <header className="header">
+
+  <Link to="/" className="logo">
+    <h1>Zeus Import</h1>
+  </Link>
+
+  <button
+    className="menu-button"
+    onClick={() => {
+      console.log("antes:", menuAbierto);
+      setMenuAbierto(!menuAbierto)
+    }}
+  >
+    ☰
+  </button>
+
+  <nav
+    className={`nav ${menuAbierto ? 'nav-open' : ''}`}
+  >
+
+    <Link
+      to="/"
+      className="nav-link"
+      onClick={() => setMenuAbierto(false)}
+    >
+      Inicio
+    </Link>
+
+    <Link
+      to="/catalogo"
+      className="nav-link"
+      onClick={() => setMenuAbierto(false)}
+    >
+      Catálogo
+    </Link>
+
+    <Link
+      to="/admin"
+      className="nav-link"
+      onClick={() => setMenuAbierto(false)}
+    >
+      Admin ⚙️
+    </Link>
+
+    <Link
+      to="/carrito"
+      className="cart-link"
+      onClick={() => setMenuAbierto(false)}
+    >
+      🛒
+
+      {cantidadProductos > 0 && (
+        <span className="cart-badge">
+          {cantidadProductos}
+        </span>
+      )}
+    </Link>
+
+    {token && (
+      <button
+        onClick={cerrarSesion}
+        className="logout-btn"
+      >
+        Salir
+      </button>
+    )}
+
+  </nav>
+
         </header>
 
         {/* CONTENEDOR DE RUTAS */}
-        <main style={{ padding: '40px' }}>
+        <main className="main-content">
           <Routes>
             <Route path="/" element={<Inicio />} />
             <Route path="/catalogo" element={<Catalogo />} />
+            <Route path="/carrito" element={<CartScreen />} />
             
             {/* Si tiene token ve el panel, si no, ve el login */}
             <Route path="/admin" element={
@@ -65,6 +131,14 @@ function App() {
             } />
           </Routes>
         </main>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnHover
+          />
 
       </div>
     </Router>

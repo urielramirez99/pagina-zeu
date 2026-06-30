@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { loginStyles } from '../styles.js';
+import '../styles/Login.css';
+import { CONFIG } from '../config/config.js';
 
 const Login = ({ alLoguearse }) => {
   const [credenciales, setCredenciales] = useState({ usuario: '', password: '' });
@@ -17,7 +18,7 @@ const Login = ({ alLoguearse }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${CONFIG.API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credenciales)
@@ -42,8 +43,8 @@ const Login = ({ alLoguearse }) => {
   };
 
   return (
-    <div style={loginStyles.container}>
-      <h2 style={loginStyles.titulo}>Panel de Control Admin</h2>
+    <div className="login-container">
+      <h2 className="login-title">Panel de Control Admin</h2>
       
       {error && (
         <div style={{ padding: '10px', marginBottom: '15px', color: 'white', backgroundColor: '#e74c3c', borderRadius: '4px', textAlign: 'center' }}>
@@ -51,16 +52,16 @@ const Login = ({ alLoguearse }) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={loginStyles.formulario}>
+      <form onSubmit={handleSubmit} className="login-form">
         <label>
           Usuario:
-          <input type="text" name="usuario" value={credenciales.usuario} onChange={handleChange} required style={loginStyles.input} />
+          <input type="text" name="usuario" value={credenciales.usuario} onChange={handleChange} required className="login-input" />
         </label>
         <label>
           Contraseña:
-          <input type="password" name="password" value={credenciales.password} onChange={handleChange} required style={loginStyles.input} />
+          <input type="password" name="password" value={credenciales.password} onChange={handleChange} required className="login-input" />
         </label>
-        <button type="submit" disabled={cargando} style={loginStyles.boton}>
+        <button type="submit" disabled={cargando} className="login-button">
           {cargando ? 'Verificando...' : 'Ingresar'}
         </button>
       </form>

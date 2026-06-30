@@ -35,7 +35,7 @@ const productoSchema = new mongoose.Schema({
         default: 'General'
     }
 }, {
-    timestamps: true // Esto crea automáticamente campos "createdAt" y "updatedAt"
+    timestamps: true // 
 });
 
 const Producto = mongoose.model('Producto', productoSchema);

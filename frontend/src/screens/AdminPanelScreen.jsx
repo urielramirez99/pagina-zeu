@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { adminStyles } from '../styles.js';
+import '../styles/Admin.css';
+import { CONFIG } from '../config/config.js';
 
 const AdminPanel = () => {
   // Estado para el formulario
@@ -18,7 +19,7 @@ const AdminPanel = () => {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState({ texto: '', tipo: '' });
 
-  const API_URL = 'http://localhost:5000/api/products';
+  const API_URL = `${CONFIG.API_URL}/products`;
 
   // Traer productos para el panel de administración
   const obtenerProductosAdmin = async () => {
@@ -52,7 +53,7 @@ const AdminPanel = () => {
   method: 'POST',
   headers: { 
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token_zeus')}` // <-- AGREGA ESTO
+    'Authorization': `Bearer ${localStorage.getItem('token_zeus')}`
   },
   body: JSON.stringify(producto)
 });
@@ -99,8 +100,8 @@ const AdminPanel = () => {
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       
       {/* SECCIÓN DEL FORMULARIO */}
-      <div style={adminStyles.container}>
-        <h2 style={{ textAlign: 'center', color: '#2c3e50', margin: '0 0 20px 0' }}>Panel Admin</h2>
+      <div className="admin-container">
+        <h2 className="admin-title">Panel Admin</h2>
         
         {mensaje.texto && (
           <div style={{ 
@@ -111,31 +112,31 @@ const AdminPanel = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={adminStyles.formulario}>
+        <form onSubmit={handleSubmit} className="admin-form" >
           <label>Nombre:
-            <input type="text" name="nombre" value={producto.nombre} onChange={handleChange} required style={adminStyles.input} />
+            <input type="text" name="nombre" value={producto.nombre} onChange={handleChange} required className="admin-input" />
           </label>
           <label>Marca:
-            <input type="text" name="marca" value={producto.marca} onChange={handleChange} required style={adminStyles.input} />
+            <input type="text" name="marca" value={producto.marca} onChange={handleChange} required className="admin-input" />
           </label>
           <div style={{ display: 'flex', gap: '10px' }}>
             <label style={{ flex: 1 }}>Precio ($):
-              <input type="number" name="precio" value={producto.precio} onChange={handleChange} required min="0" step="0.01" style={adminStyles.input} />
+              <input type="number" name="precio" value={producto.precio} onChange={handleChange} required min="0" step="0.01" className="admin-input" />
             </label>
             <label style={{ flex: 1 }}>Stock:
-              <input type="number" name="stock" value={producto.stock} onChange={handleChange} required min="0" style={adminStyles.input} />
+              <input type="number" name="stock" value={producto.stock} onChange={handleChange} required min="0" className="admin-input" />
             </label>
           </div>
           <label>Categoría:
-            <input type="text" name="categoria" value={producto.categoria} onChange={handleChange} style={adminStyles.input} />
+            <input type="text" name="categoria" value={producto.categoria} onChange={handleChange} className="admin-input" />
           </label>
           <label>URL Imagen:
-            <input type="url" name="imagenUrl" value={producto.imagenUrl} onChange={handleChange} required style={adminStyles.input} />
+            <input type="url" name="imagenUrl" value={producto.imagenUrl} onChange={handleChange} required className="admin-input" />
           </label>
           <label>Descripción:
-            <textarea name="descripcion" value={producto.descripcion} onChange={handleChange} rows="3" style={adminStyles.input}></textarea>
+            <textarea name="descripcion" value={producto.descripcion} onChange={handleChange} rows="3" className="admin-textarea"></textarea>
           </label>
-          <button type="submit" disabled={cargando} style={adminStyles.botonSubmit}>
+          <button type="submit" disabled={cargando} className="admin-button" >
             {cargando ? 'Guardando...' : 'Agregar Producto'}
           </button>
         </form>

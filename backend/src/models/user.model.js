@@ -14,7 +14,7 @@ const usuarioSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-// El hook moderno: Al ser async, Mongoose espera a que termine. ¡Sin usar next!
+
 usuarioSchema.pre('save', async function() {
     // Si no se modificó la contraseña, salimos de la función sin hacer nada
     if (!this.isModified('password')) return;
@@ -24,7 +24,7 @@ usuarioSchema.pre('save', async function() {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Método para comparar contraseñas en el login (Este se queda igual)
+// Método para comparar contraseñas en el login 
 usuarioSchema.methods.compararPassword = async function(passwordIngresada) {
     return await bcrypt.compare(passwordIngresada, this.password);
 };
