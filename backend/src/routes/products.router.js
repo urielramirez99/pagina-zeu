@@ -6,11 +6,11 @@ import { actualizarProducto, crearProducto, eliminarProducto, obtenerProductos }
 const Authrouter = express.Router();
 
 
-Authrouter.get("/", obtenerProductos)                  // Público
-Authrouter.post("/", protegerRuta, crearProducto);     // 🔒 Protegido
+Authrouter.get("/", obtenerProductos)                  
+Authrouter.post("/", protegerRuta, crearProducto);    
 
 
-Authrouter.put('/:id', protegerRuta, actualizarProducto)   // 🔒 Protegido
-Authrouter.delete('/:id',protegerRuta, eliminarProducto); // 🔒 Protegido
+Authrouter.put('/:id', protegerRuta, actualizarProducto)   
+Authrouter.delete('/:id',protegerRuta, eliminarProducto); 
 
 export default Authrouter;

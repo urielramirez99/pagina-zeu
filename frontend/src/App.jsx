@@ -9,7 +9,7 @@ import CartScreen from './screens/CartScreen.jsx';
 import { useCart } from './context/CartContext.jsx';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './styles/Header.css';
+import './styles/header.css';
 
 function App() {
   // Estado para guardar el token del administrador
