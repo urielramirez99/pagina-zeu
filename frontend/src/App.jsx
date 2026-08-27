@@ -83,13 +83,13 @@ console.log("menu:", menuAbierto);
       Catálogo
     </Link>
 
-    <Link
+    {/* <Link
       to="/admin"
       className="nav-link"
       onClick={() => setMenuAbierto(false)}
     >
       Admin ⚙️
-    </Link>
+    </Link> */}
 
     <Link
       to="/carrito"
