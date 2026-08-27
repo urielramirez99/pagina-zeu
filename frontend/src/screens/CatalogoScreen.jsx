@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import { CONFIG } from '../config/config.js';
 import { toast } from 'react-toastify';
-import '../styles/Catalogo.css';
+import '../styles/catalogo.css';
 
 const Catalogo = () => {
   const [productos, setProductos] = useState([]);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CONFIG } from '../config/config.js';
-import '../styles/Inicio.css';
+import '../styles/inicio.css';
 
 const Inicio = () => {
   const [destacados, setDestacados] = useState([]);

@@ -1,6 +1,6 @@
 import { CONFIG } from "../config/config.js";
 import { useCart } from "../context/CartContext.jsx";
-import "../styles/Cart.css";
+import "../styles/cart.css";
 
 function CartScreen() {
 const { cart, eliminarDelCarrito, aumentarCantidad, disminuirCantidad, vaciarCarrito } = useCart();

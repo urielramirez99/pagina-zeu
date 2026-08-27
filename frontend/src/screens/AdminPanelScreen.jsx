@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '../styles/Admin.css';
+import '../styles/admin.css';
 import { CONFIG } from '../config/config.js';
 
 const AdminPanel = () => {

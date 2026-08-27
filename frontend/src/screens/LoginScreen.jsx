@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../styles/Login.css';
+import '../styles/login.css';
 import { CONFIG } from '../config/config.js';
 
 const Login = ({ alLoguearse }) => {
