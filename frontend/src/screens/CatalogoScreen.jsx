@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useCart } from '../context/CartContext.jsx';
 import { CONFIG } from '../config/config.js';
 import { toast } from 'react-toastify';
@@ -7,6 +7,7 @@ import '../styles/catalogo.css';
 const Catalogo = () => {
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
   const [busqueda, setBusqueda] = useState('');
 
   const {
@@ -21,174 +22,147 @@ const Catalogo = () => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
+        setError(null);
         const response = await fetch(API_URL);
+        if (!response.ok) throw new Error('Error al conectar con el servidor');
         const data = await response.json();
         setProductos(data);
-      } catch (error) {
-        console.error('Error al traer los perfumes:', error);
+      } catch (err) {
+        console.error('Error al traer los perfumes:', err);
+        setError('No se pudieron cargar los productos. Intenta nuevamente.');
       } finally {
         setCargando(false);
       }
     };
 
     obtenerProductos();
-  }, []);
+  }, [API_URL]);
+
+  // Memorizar el filtrado para mejorar rendimiento
+  const productosFiltrados = useMemo(() => {
+    const termino = busqueda.toLowerCase().trim();
+    if (!termino) return productos;
+
+    return productos.filter((producto) =>
+      producto.nombre?.toLowerCase().includes(termino) ||
+      producto.marca?.toLowerCase().includes(termino)
+    );
+  }, [productos, busqueda]);
+
+  const agregarProducto = (perfume) => {
+    agregarAlCarrito(perfume);
+    toast.success(`${perfume.nombre} agregado al carrito`);
+  };
 
   if (cargando) {
     return (
-      <p style={{ textAlign: 'center' }}>
-        Cargando fragancias...
-      </p>
+      <div className="catalogo-state-container">
+        <div className="spinner"></div>
+        <p>Cargando fragancias...</p>
+      </div>
     );
   }
 
-  if (productos.length === 0) {
+  if (error) {
     return (
-      <p style={{ textAlign: 'center' }}>
-        No hay perfumes disponibles.
-      </p>
+      <div className="catalogo-state-container">
+        <p className="error-message">{error}</p>
+      </div>
     );
   }
-
-  const agregarProducto = (perfume) => {
-  agregarAlCarrito(perfume);
-
-  toast.success(
-    `${perfume.nombre} agregado al carrito`
-  );
-};
-
-const productosFiltrados = productos.filter((producto) =>
-  producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-  producto.marca.toLowerCase().includes(busqueda.toLowerCase())
-);
 
   return (
-    <div className='catalogo-container'>
-      <h2 className='catalogo-title'>
-        Nuestro Catálogo
-      </h2>
+    <div className="catalogo-container">
+      <h2 className="catalogo-title">Nuestro Catálogo</h2>
 
-      <input
-        type="text"
-        placeholder="🔍 Buscar perfume o marca..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        className='search-input'
+      <div className="search-wrapper">
+        <input
+          type="text"
+          placeholder="🔍 Buscar por nombre o marca..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="search-input"
         />
+      </div>
 
-    {productosFiltrados.length === 0 && (
-    <p
-    style={{
-      textAlign: 'center',
-      marginBottom: '20px'
-    }}>
-    No se encontraron perfumes.
-    </p>
-    )}
+      {productosFiltrados.length === 0 ? (
+        <div className="no-results">
+          <p>No se encontraron perfumes que coincidan con "{busqueda}".</p>
+        </div>
+      ) : (
+        <div className="catalogo-grid">
+          {productosFiltrados.map((perfume) => {
+            const productoEnCarrito = cart.find(
+              (item) => item._id === perfume._id
+            );
+            const estaAgotado = perfume.stock <= 0;
+            const alcanzoLimiteStock = productoEnCarrito && productoEnCarrito.cantidad >= perfume.stock;
 
-      <div className='catalogo-grid'>
-        {productosFiltrados.map((perfume) => {
-          const productoEnCarrito = cart.find(
-            item => item._id === perfume._id
-          );
-
-          return (
-            <div
-              key={perfume._id}
-              className='product-card'
-            >
-              <img
-                src={perfume.imagenUrl}
-                alt={perfume.nombre}
-                className="product-image"
-              />
-
-              <div className='product-info'>
-                <span className="product-brand" >
-                  {perfume.marca}
-                </span>
-
-                <h4 className="product-name">
-                  {perfume.nombre}
-                </h4>
-
-                <p className="product-description">
-                  {perfume.descripcion}
-                </p>
-
-                <div className="product-footer">
-                  <span className="product-price">
-                    ${perfume.precio}
-                  </span>
-
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      color:
-                        perfume.stock > 0
-                          ? '#27ae60'
-                          : '#c0392b',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    {perfume.stock > 0
-                      ? `${perfume.stock} disp.`
-                      : 'Agotado'}
-                  </span>
+            return (
+              <div key={perfume._id} className="product-card">
+                <div className="product-image-container">
+                  <img
+                    src={perfume.imagenUrl}
+                    alt={perfume.nombre}
+                    className="product-image"
+                    loading="lazy"
+                  />
+                  {estaAgotado && <span className="badge-out">Agotado</span>}
                 </div>
 
-                {productoEnCarrito ? (
-                  <div className="quantity-controls">
-                    <button
-                      onClick={() =>
-                        disminuirCantidad(perfume._id)
-                      }
-                      style={{
-                        padding: '5px 12px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      -
-                    </button>
+                <div className="product-info">
+                  <span className="product-brand">{perfume.marca}</span>
+                  <h4 className="product-name" title={perfume.nombre}>
+                    {perfume.nombre}
+                  </h4>
+                  <p className="product-description">{perfume.descripcion}</p>
 
-                    <span
-                      style={{
-                        fontWeight: 'bold',
-                        fontSize: '16px'
-                      }}
-                    >
-                      {productoEnCarrito.cantidad}
+                  <div className="product-footer">
+                    <span className="product-price">
+                      ${perfume.precio?.toLocaleString('es-AR')}
                     </span>
 
-                    <button
-                      onClick={() =>
-                        aumentarCantidad(perfume._id)
-                      }
-                      style={{
-                        padding: '5px 12px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      +
-                    </button>
+                    <span className={`stock-status ${estaAgotado ? 'stock-out' : 'stock-in'}`}>
+                      {estaAgotado ? 'Sin Stock' : `${perfume.stock} disp.`}
+                    </span>
                   </div>
-                ) : (
-                  <button
-                    onClick={() =>
-                      agregarProducto(perfume)
-                    }
-                    disabled={perfume.stock <= 0}
-                    className="add-cart-btn"
-                  >
-                    Agregar al carrito
-                  </button>
-                )}
+
+                  {productoEnCarrito ? (
+                    <div className="quantity-controls">
+                      <button
+                        onClick={() => disminuirCantidad(perfume._id)}
+                        className="btn-qty"
+                      >
+                        -
+                      </button>
+
+                      <span className="qty-number">
+                        {productoEnCarrito.cantidad}
+                      </span>
+
+                      <button
+                        onClick={() => aumentarCantidad(perfume._id)}
+                        disabled={alcanzoLimiteStock}
+                        className="btn-qty"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => agregarProducto(perfume)}
+                      disabled={estaAgotado}
+                      className="add-cart-btn"
+                    >
+                      {estaAgotado ? 'Sin stock' : 'Agregar al carrito'}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
