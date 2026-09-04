@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
 import { CONFIG } from '../config/config.js';
 import { toast } from 'react-toastify';
@@ -9,6 +10,7 @@ import Footer from '../components/Footer.jsx';
 const ITEMS_POR_PAGINA = 8; 
 
 const Catalogo = () => {
+  const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1);
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -122,7 +124,12 @@ const Catalogo = () => {
             const alcanzoLimiteStock = productoEnCarrito && productoEnCarrito.cantidad >= perfume.stock;
 
             return (
-              <div key={perfume._id} className="product-card">
+              <div 
+                key={perfume._id} 
+                className="product-card"
+                onClick={() => navigate(`/producto/${perfume._id}`)}
+                style={{cursor: "pointer"}}
+              >
                 <div className="product-image-container">
                   <img
                     src={perfume.imagenUrl}
@@ -151,7 +158,10 @@ const Catalogo = () => {
                   </div>
 
                   {productoEnCarrito ? (
-                    <div className="quantity-controls">
+                    <div 
+                      className="quantity-controls"
+                      onClick={(e)=> e.stopPropagation()}
+                    >
                       <button
                         onClick={() => disminuirCantidad(perfume._id)}
                         className="btn-qty"
@@ -173,7 +183,9 @@ const Catalogo = () => {
                     </div>
                   ) : (
                     <button
-                      onClick={() => agregarProducto(perfume)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        agregarProducto(perfume)}}
                       disabled={estaAgotado}
                       className="add-cart-btn"
                     >

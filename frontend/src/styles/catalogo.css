@@ -236,14 +236,37 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Adaptación responsive */
+
 @media (max-width: 640px) {
+  .catalogo-container {
+    padding: 15px 10px;
+  }
+
+  /* 1 columna limpia en celulares muy pequeños, o 2 según espacio */
   .catalogo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
   }
 
   .product-image-container {
-    height: 180px;
+    height: 160px;
+    padding: 10px;
+  }
+
+  .product-info {
+    padding: 10px;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+  }
+
+  .product-price {
+    font-size: 1.05rem;
+  }
+
+  .add-cart-btn {
+    padding: 8px 10px;
+    font-size: 0.85rem;
   }
 }

@@ -4,10 +4,12 @@ import Inicio from './screens/InicioScreen.jsx';
 import Catalogo from './screens/CatalogoScreen.jsx';
 import AdminPanel from './screens/AdminPanelScreen.jsx';
 import Login from './screens/LoginScreen.jsx';
+import ProductDetailScreen from './screens/ProductDetailScreen.jsx';
 import { useEffect, useState } from 'react';
 import CartScreen from './screens/CartScreen.jsx';
 import { useCart } from './context/CartContext.jsx';
 import { ToastContainer } from 'react-toastify';
+import { ZeusLogo } from './components/ZeusLogo.jsx';
 import 'react-toastify/dist/ReactToastify.css';
 import './styles/header.css';
 
@@ -48,40 +50,40 @@ console.log("menu:", menuAbierto);
         
         {/* HEADER */}
         <header className="header">
+          <Link to="/" className="logo-link">
+            <ZeusLogo width={32} height={32} color="#FFFFFF"/>
+            <span className="logo-text">Zeu Import</span>
+          </Link>
 
-  <Link to="/" className="logo">
-    <h1>Zeus Import</h1>
-  </Link>
+        <button
+          className="menu-button"
+          onClick={() => {
+          console.log("antes:", menuAbierto);
+          setMenuAbierto(!menuAbierto)
+          }}
+        >
+          ☰
+        </button>
 
-  <button
-    className="menu-button"
-    onClick={() => {
-      console.log("antes:", menuAbierto);
-      setMenuAbierto(!menuAbierto)
-    }}
-  >
-    ☰
-  </button>
+      <nav
+        className={`nav ${menuAbierto ? 'nav-open' : ''}`}
+      >
 
-  <nav
-    className={`nav ${menuAbierto ? 'nav-open' : ''}`}
-  >
+      <Link
+        to="/"
+        className="nav-link"
+        onClick={() => setMenuAbierto(false)}
+      >
+        Inicio
+      </Link>
 
-    <Link
-      to="/"
-      className="nav-link"
-      onClick={() => setMenuAbierto(false)}
-    >
-      Inicio
-    </Link>
-
-    <Link
-      to="/catalogo"
-      className="nav-link"
-      onClick={() => setMenuAbierto(false)}
-    >
-      Catálogo
-    </Link>
+      <Link
+        to="/catalogo"
+        className="nav-link"
+        onClick={() => setMenuAbierto(false)}
+      >
+        Catálogo
+      </Link>
 
     {/* <Link
       to="/admin"
@@ -123,6 +125,7 @@ console.log("menu:", menuAbierto);
           <Routes>
             <Route path="/" element={<Inicio />} />
             <Route path="/catalogo" element={<Catalogo />} />
+            <Route path="/producto/:id" element={<ProductDetailScreen />} />
             <Route path="/carrito" element={<CartScreen />} />
             
             {/* Si tiene token ve el panel, si no, ve el login */}

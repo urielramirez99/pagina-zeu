@@ -1,12 +1,14 @@
 import express from 'express';
 
 import protegerRuta from '../middlewares/authMiddleware.js'; // <-- Importamos el middleware
-import { actualizarProducto, crearProducto, eliminarProducto, obtenerProductos } from '../controllers/products.controller.js';
+import { actualizarProducto, crearProducto, eliminarProducto, obtenerProductos, obtenerProductoPorId, obtenerProductosSimilares } from '../controllers/products.controller.js';
 
 const Authrouter = express.Router();
 
 
-Authrouter.get("/", obtenerProductos)                  
+Authrouter.get("/", obtenerProductos) 
+Authrouter.get("/:id", obtenerProductoPorId) 
+Authrouter.get("/:id/similares", obtenerProductosSimilares)                
 Authrouter.post("/", protegerRuta, crearProducto);    
 
 
