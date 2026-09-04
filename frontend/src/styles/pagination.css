@@ -1,0 +1,79 @@
+/* Contenedor principal con más espacio y presencia */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px; /* Mayor separación entre botones */
+  margin: 50px 0 30px 0;
+  width: 100%;
+}
+
+/* Botones más grandes, redondeados y estilizados */
+.pagination button,
+.pagination a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;  /* Aumentado de 40px a 48px */
+  height: 48px;      /* Aumentado de 40px a 48px */
+  padding: 0 12px;
+  border-radius: 12px; /* Esquinas más suavizadas */
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-size: 1.05rem; /* Texto un poco más grande */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  outline: none;
+}
+
+/* Efecto hover elegante al pasar el cursor */
+.pagination button:hover:not(:disabled),
+.pagination a:hover:not([style*="pointer-events: none"]) {
+  border-color: #0f172a;
+  background-color: #f8fafc;
+  color: #0f172a;
+  transform: translateY(-2px); /* Eleva levemente el botón */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Botón activo (página seleccionada) */
+.pagination button.is-active,
+.pagination a.is-active {
+  background-color: #0f172a; /* Azul oscuro elegante/negro del navbar */
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25); /* Sombra acentuada */
+  transform: translateY(-1px);
+}
+
+/* Transición suave para las flechas SVG */
+.pagination button svg,
+.pagination a svg {
+  stroke: currentColor;
+  transition: transform 0.2s ease;
+}
+
+/* Leve movimiento en la flecha izquierda al hacer hover */
+.pagination button:first-child:hover:not(:disabled) svg {
+  transform: translateX(-2px);
+}
+
+/* Leve movimiento en la flecha derecha al hacer hover */
+.pagination button:last-child:hover:not(:disabled) svg {
+  transform: translateX(2px);
+}
+
+/* Estado deshabilitado (flechas apagadas) */
+.pagination button:disabled,
+.pagination a[style*="pointer-events: none"] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+  background-color: #f1f5f9;
+  color: #94a3b8;
+  box-shadow: none;
+  transform: none;
+}

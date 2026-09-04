@@ -1,3 +1,4 @@
+import Footer from "../components/Footer.jsx";
 import { CONFIG } from "../config/config.js";
 import { useCart } from "../context/CartContext.jsx";
 import "../styles/cart.css";
@@ -119,6 +120,7 @@ return (
         </button>
       </>
     )}
+    <Footer />
   </div>
 );
 

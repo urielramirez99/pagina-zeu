@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CONFIG } from '../config/config.js';
 import '../styles/inicio.css';
+import Footer from '../components/Footer.jsx';
 
 const Inicio = () => {
   const [destacados, setDestacados] = useState([]);
@@ -138,7 +139,9 @@ const Inicio = () => {
         </Link>
       </section>
 
-      <footer className="footer">
+      <Footer />
+
+      {/* <footer className="footer">
         <div className="footer-content">
           <div className="footer-brand">
             <h2>Zeus Import</h2>
@@ -172,7 +175,7 @@ const Inicio = () => {
         <div className="footer-bottom">
           <p>© 2026 Zeus Import. Todos los derechos reservados.</p>
         </div>
-      </footer>
+      </footer> */}
 
     </div>
   );

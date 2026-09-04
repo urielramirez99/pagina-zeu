@@ -3,8 +3,13 @@ import { useCart } from '../context/CartContext.jsx';
 import { CONFIG } from '../config/config.js';
 import { toast } from 'react-toastify';
 import '../styles/catalogo.css';
+import Pagination from '../components/Pagination.jsx';
+import Footer from '../components/Footer.jsx';
+
+const ITEMS_POR_PAGINA = 8; 
 
 const Catalogo = () => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -18,6 +23,11 @@ const Catalogo = () => {
   } = useCart();
 
   const API_URL = `${CONFIG.API_URL}/products`;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Opcional: sube al inicio al cambiar de página
+  };
 
   useEffect(() => {
     const obtenerProductos = async () => {
@@ -34,11 +44,10 @@ const Catalogo = () => {
         setCargando(false);
       }
     };
-
     obtenerProductos();
   }, [API_URL]);
 
-  // Memorizar el filtrado para mejorar rendimiento
+  // 1. Filtrar productos según búsqueda
   const productosFiltrados = useMemo(() => {
     const termino = busqueda.toLowerCase().trim();
     if (!termino) return productos;
@@ -48,6 +57,20 @@ const Catalogo = () => {
       producto.marca?.toLowerCase().includes(termino)
     );
   }, [productos, busqueda]);
+
+  // 2. Calcular páginas totales basadas en los productos filtrados
+  const totalPages = Math.ceil(productosFiltrados.length / ITEMS_POR_PAGINA);
+
+  // 3. Cortar el array para mostrar solo la página actual
+  const productosPaginados = useMemo(() => {
+    const inicio = (currentPage - 1) * ITEMS_POR_PAGINA;
+    return productosFiltrados.slice(inicio, inicio + ITEMS_POR_PAGINA);
+  }, [productosFiltrados, currentPage]);
+
+  // 4. Volver a la página 1 al buscar algo nuevo
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [busqueda]);
 
   const agregarProducto = (perfume) => {
     agregarAlCarrito(perfume);
@@ -91,7 +114,7 @@ const Catalogo = () => {
         </div>
       ) : (
         <div className="catalogo-grid">
-          {productosFiltrados.map((perfume) => {
+          {productosPaginados.map((perfume) => {
             const productoEnCarrito = cart.find(
               (item) => item._id === perfume._id
             );
@@ -163,6 +186,14 @@ const Catalogo = () => {
           })}
         </div>
       )}
+
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange} 
+      />
+
+      <Footer />
     </div>
   );
 };
